@@ -1,0 +1,36 @@
+﻿@page "/"
+@using LuceCarterWebsite.Services
+@using Contentful.Core.Models
+@inject ContentfulService ContentfulService;
+
+<PageTitle>Home</PageTitle>
+
+<div class="cheesejoke-container">
+    <div class="cheesejoke">
+        <p>@cheeseJoke🧀</p>
+    </div>
+</div>
+
+@if (blogPosts != null)
+{
+    @foreach (var blogPost in blogPosts)
+    {
+        <p>@blogPost.Fields.Title</p>
+    }
+}
+
+@code {
+
+    string cheeseJoke = "";
+    ContentfulCollection<BlogPost> blogPosts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var jokeService = new DadJokeService(new HttpClient());
+        cheeseJoke = await jokeService.GetJokeAsync();
+
+        blogPosts = await ContentfulService.GetEntries();
+   }
+
+    
+}
